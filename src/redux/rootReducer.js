@@ -1,16 +1,7 @@
 import {combineReducers} from 'redux'
-import {createSlice} from "@reduxjs/toolkit";
+import {createAction, createSlice} from "@reduxjs/toolkit";
 
-export function asyncIncrement() {
-  return function (dispatch, getState) {
-    console.log("State in async: {}", getState())
-    dispatch(disableButtons())
-    setTimeout(() => {
-      dispatch(increment())
-      dispatch(enableButtons())
-    }, 1500)
-  }
-}
+export const asyncIncrement = createAction('counter/asyncIncrement')
 
 const counter = createSlice({
   name: 'counter',
