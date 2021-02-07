@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --open",
     "build": "webpack --mode development",
-    "devserver": "webpack serve --mode development --open google-chrome --inline --hot"
+    "devserver": "webpack serve --mode development --open chrome --inline --hot"
   },
   "keywords": [],
   "author": "Vladilen Minin <vladilen.minin@gmail.com>",

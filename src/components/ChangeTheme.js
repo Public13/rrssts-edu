@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {changeTheme} from "../redux/actions";
+import {changeTheme} from "../redux/rootReducer";
 
 const ChangeTheme = ({changeThemeA, disableFlag, theme}) => {
   const handleChangeTheme = () => {

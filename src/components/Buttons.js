@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {decrement, increment} from "../redux/actions";
+import {decrement, increment} from "../redux/rootReducer";
 
 const Buttons = ({incrementA, decrementA, disableFlag}) => {
 

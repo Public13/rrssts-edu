@@ -1,34 +1,49 @@
 import {combineReducers} from 'redux'
-import {CHANGE_THEME, DECREMENT, DISABLE_BUTTONS, ENABLE_BUTTONS, INCREMENT} from './types'
+import {createSlice} from "@reduxjs/toolkit";
 
-function counterReducer(state = 0, action) {
-  if (action.type === INCREMENT) {
-    return state + 1
-  } else if (action.type === DECREMENT) {
-    return state - 1
-  }
-
-  return state
-}
-
-const initialThemeState = {
-  value: 'light',
-  disabled: false
-}
-
-function themeReducer(state = initialThemeState, action) {
-  switch (action.type) {
-    case CHANGE_THEME:
-      return {...state, value: action.payload}
-    case ENABLE_BUTTONS:
-      return {...state, disabled: false}
-    case DISABLE_BUTTONS:
-      return {...state, disabled: true}
-    default: return state
+export function asyncIncrement() {
+  return function (dispatch, getState) {
+    console.log("State in async: {}", getState())
+    dispatch(disableButtons())
+    setTimeout(() => {
+      dispatch(increment())
+      dispatch(enableButtons())
+    }, 1500)
   }
 }
+
+const counter = createSlice({
+  name: 'counter',
+  initialState: 42,
+  reducers: {
+    increment: state => state + 1,
+    decrement: (state) => state - 1
+  },
+})
+
+const theme = createSlice({
+  name: "theme",
+  initialState: {
+    value: 'light',
+    disabled: false
+  },
+  reducers: {
+    changeTheme: (state, action) => {
+      state.value = action.payload
+    },
+    enableButtons: state => {
+      state.disabled = false
+    },
+    disableButtons: state => {
+      state.disabled = true
+    },
+  },
+})
+
+export const {increment, decrement} = counter.actions
+export const {changeTheme, enableButtons, disableButtons} = theme.actions
 
 export const rootReducer = combineReducers({
-  counter: counterReducer,
-  theme: themeReducer
+  counter: counter.reducer,
+  theme: theme.reducer
 })

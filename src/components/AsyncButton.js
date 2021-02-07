@@ -1,6 +1,6 @@
 import React from "react";
 import {useDispatch} from 'react-redux';
-import {asyncIncrement} from "../redux/actions";
+import {asyncIncrement} from "../redux/rootReducer";
 
 export const AsyncButton = () => {
 
