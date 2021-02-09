@@ -75,7 +75,7 @@ module.exports = {
     port: 3000,
     proxy: {
       "/proxy": {
-        target: "http://127.0.0.1:9000",
+        target: "http://192.168.126.66:8200",
         pathRewrite: {"^/proxy": ""},
       },
     },
