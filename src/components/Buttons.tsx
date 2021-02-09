@@ -1,8 +1,12 @@
 import React from "react";
-import {connect} from 'react-redux';
-import {decrement, increment} from "../redux/rootReducer";
+import { connect } from 'react-redux';
+import { RootState, decrement, increment } from "../redux/rootReducer";
 
-const Buttons = ({incrementA, decrementA, disableFlag}) => {
+
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+
+const Buttons: React.FC<Props> = props => {
+  const { incrementA, decrementA, disableFlag } = props
 
   const handleIncrement = () => {
     incrementA()
@@ -20,7 +24,7 @@ const Buttons = ({incrementA, decrementA, disableFlag}) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     disableFlag: state.theme.disabled
   }

@@ -1,8 +1,10 @@
 import React from "react";
-import {connect} from "react-redux";
-import {changeTheme} from "../redux/rootReducer";
+import { connect } from "react-redux";
+import { changeTheme, RootState } from "../redux/rootReducer";
 
-const ChangeTheme = ({changeThemeA, disableFlag, theme}) => {
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+
+const ChangeTheme = ({ changeThemeA, disableFlag, theme }: Props) => {
   const handleChangeTheme = () => {
     if (theme === 'light') {
       changeThemeA('dark')
@@ -15,7 +17,7 @@ const ChangeTheme = ({changeThemeA, disableFlag, theme}) => {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     disableFlag: state.theme.disabled,
     theme: state.theme.value

@@ -1,5 +1,5 @@
-import {delay, put, takeEvery} from 'redux-saga/effects'
-import {asyncIncrement, disableButtons, enableButtons, increment} from "../redux/rootReducer";
+import { delay, put, takeEvery } from 'redux-saga/effects'
+import { asyncIncrement, disableButtons, enableButtons, increment } from "../redux/rootReducer";
 
 // worker Saga
 function* asyncIncr() {
@@ -9,7 +9,7 @@ function* asyncIncr() {
     yield put(increment())
     yield put(enableButtons())
   } catch (e) {
-    yield put({type: "FAIL"})
+    yield put({ type: "FAIL" })
   }
 }
 

@@ -6,7 +6,7 @@ module.exports = {
   mode: 'development',
   context: path.resolve(__dirname, 'src'),
   entry: {
-    "main": ["whatwg-fetch", path.resolve(__dirname, "src", "index.js")],
+    "main": ["whatwg-fetch", path.resolve(__dirname, "src", "index.tsx")],
   },
   output: {
     path: path.resolve(__dirname, "build", "distribution"),
@@ -14,6 +14,9 @@ module.exports = {
     filename: "script/[name].[hash].bundle.js",
     chunkFilename: "script/[id].[name].[hash].bundle.js",
     globalObject: "this",
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   plugins: [
     new CleanWebpackPlugin({

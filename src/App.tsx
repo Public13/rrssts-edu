@@ -1,14 +1,15 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import './styles.css';
 import Counter from "./components/Counter";
 import Buttons from "./components/Buttons";
 import ChangeTheme from "./components/ChangeTheme";
 import CounterNonConnect from "./components/CounterNonConnect";
-import {AsyncButton} from "./components/AsyncButton";
-import {useSelector} from "react-redux";
+import { AsyncButton } from "./components/AsyncButton";
+import { useSelector } from "react-redux";
+import { RootState, ThemeState } from './redux/rootReducer';
 
 function App() {
-  const theme = useSelector(state => state.theme.value);
+  const theme = useSelector((state: RootState) => state.theme.value);
   useEffect(() => {
     document.body.className = theme
   }, [theme])
@@ -17,21 +18,21 @@ function App() {
     <div className="container pt-5">
       <h1 className="heading">
         <span>Redux</span>
-        <ChangeTheme/>
+        <ChangeTheme />
       </h1>
 
-      <hr/>
+      <hr />
 
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">
-            <Counter/>
+            <Counter />
             &nbsp;
-            <CounterNonConnect/>
+            <CounterNonConnect />
           </h5>
           <div className="buttons-layout">
-            <Buttons/>
-            <AsyncButton/>
+            <Buttons />
+            <AsyncButton />
           </div>
         </div>
       </div>
