@@ -72,7 +72,7 @@ module.exports = {
     contentBase: path.join(__dirname, "build"),
     compress: true,
     historyApiFallback: true,
-    port: 3000,
+    port: 3001,
     proxy: {
       "/proxy": {
         target: "http://192.168.126.66:8200",

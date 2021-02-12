@@ -57,6 +57,7 @@ const shelter = createSlice({
 })
 
 const fetchDog = createAction('@@shelter/fetchDog')
+const fetchUserGroup = createAction('@@shelter/fetchUserGroup')
 const fetchCat = createAction('@@shelter/fetchCat')
 const rewriteCat = createAction<McpttGroup>('@@shelter/rewriteCat')
 
@@ -71,6 +72,7 @@ type RootState = ReturnType<typeof rootReducer>
 // Sagas
 function* watcher() {
   yield takeEvery(fetchDog.type, fetchDogAsync);
+  yield takeEvery(fetchUserGroup.type, fetchUserGroupAsync);
   yield takeEvery(fetchCat.type, fetchCatAsync);
   yield takeEvery(rewriteCat.type, rewriteCatAsync);
 }
@@ -78,7 +80,23 @@ function* watcher() {
 function* fetchDogAsync() {
   try {
     yield put(loading(''));
-    const data: Response = yield fetch('http://localhost:3000/proxy/xcap-root/org.openmobilealliance.xcap-directory/global/directory.xml/~~/xcap-directory/folder%5B@auid=%22org.openmobilealliance.groups%22%5D')
+    const data: Response = yield fetch('http://localhost:3001/proxy/xcap-root/org.openmobilealliance.xcap-directory/global/directory.xml/~~/xcap-directory/folder%5B@auid=%22org.openmobilealliance.groups%22%5D')
+    const xmlData = yield call([data, data.text])
+    console.log(xmlData)
+    const strJson = xml2json(xmlData, { compact: true, spaces: 2 })
+    console.log(strJson)
+    const group: McpttGroup = JSON.parse(strJson);
+    yield put(requestSuccessed(group));
+  } catch (error) {
+    console.log(error)
+    yield put(requestFail(''));
+  }
+}
+
+function* fetchUserGroupAsync() {
+  try {
+    yield put(loading(''));
+    const data: Response = yield fetch('http://localhost:3001/proxy/xcap-root/org.openmobilealliance.xcap-directory/users/sip:pelle_test@protei.ru/directory.xml/~~/xcap-directory/folder%5B@auid=%22org.openmobilealliance.groups%22%5D')
     const xmlData = yield call([data, data.text])
     console.log(xmlData)
     const strJson = xml2json(xmlData, { compact: true, spaces: 2 })
@@ -94,12 +112,15 @@ function* fetchDogAsync() {
 function* fetchCatAsync() {
   try {
     yield put(loading(''));
-    const data: Response = yield fetch('http://localhost:3000/proxy/xcap-root/org.openmobilealliance.groups/global/sip:GMCproposedMCPTTGroupID@MCPTTSP2.example.com')
+    const data: Response = yield fetch('http://localhost:3001/proxy/xcap-root/org.openmobilealliance.groups/global/sip:GMCproposedMCPTTGroupID@MCPTTSP2.example.com')
     const xmlData = yield call([data, data.text])
     const strJson = xml2json(xmlData, { compact: true, spaces: 2 })
     console.log(strJson)
-    const group: McpttGroup = JSON.parse(strJson);
-    yield put(requestSuccessed(group));
+
+    const mcpttGroup: McpttGroup = JSON.parse(strJson);
+    //Object.freeze(mcpttGroup)
+
+    yield put(requestSuccessed(mcpttGroup));
   } catch (error) {
     console.log(error)
     yield put(requestFail(''));
@@ -110,8 +131,8 @@ function* rewriteCatAsync(action: ReturnType<typeof rewriteCat>) {
   try {
     yield put(loading(''));
     const dataToSend = json2xml(JSON.stringify(action.payload), { compact: true, spaces: 1 })
-    console.log("parse data:", dataToSend)
-    const responce: Response = yield fetch('http://localhost:3000/proxy/xcap-root/org.openmobilealliance.groups/global/pelle_test/group_doc.xml',
+    console.log("data to send:", dataToSend)
+    const responce: Response = yield fetch('http://localhost:3001/proxy/xcap-root/org.openmobilealliance.groups/users/sip:pelle_test@protei.ru/group_doc13.xml',
       {
         method: "PUT",
         headers: {
@@ -134,9 +155,10 @@ function App() {
   const dispatch = useDispatch()
   return (
     <div>
-      <button onClick={() => dispatch(fetchDog())}>Groups dir global)</button>&nbsp;
-      <button onClick={() => dispatch(fetchCat())}>Group group_doc.xml</button>&nbsp;
-      <button onClick={() => dispatch(rewriteCat(shelterState.data as McpttGroup))}>Rewrite group_doc.xml)</button>
+      <button onClick={() => dispatch(fetchDog())}>Groups dir global</button>&nbsp;
+      <button onClick={() => dispatch(fetchUserGroup())}>Groups dir users</button>&nbsp;
+      <button onClick={() => dispatch(fetchCat())}>Global group fetch</button>&nbsp;
+      <button onClick={() => dispatch(rewriteCat(mutator(shelterState.data as McpttGroup)))}>Rewrite global group)</button>
       {shelterState.loading
         ? <p>Loading...</p>
         : shelterState.error
@@ -147,6 +169,16 @@ function App() {
     </div>
   )
 }
+
+function mutator(mcGroup: McpttGroup) {
+  const mcpttGroup = JSON.parse(JSON.stringify(mcGroup))
+  console.log("=== mcpttGroup: ", mcpttGroup)
+  const newUri = "sip:pelleTestMcpttGroup13@protei.ru"
+  mcpttGroup.group['list-service']._attributes.uri = newUri
+  console.log("=== after replace", mcpttGroup)
+  return mcpttGroup
+}
+
 
 // Store
 const sagaMiddleware = createSagaMiddleware();
